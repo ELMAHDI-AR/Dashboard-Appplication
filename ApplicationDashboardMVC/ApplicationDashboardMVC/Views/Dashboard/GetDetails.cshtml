@@ -1,0 +1,21 @@
+﻿@model IEnumerable<ApplicationDashboardMVC.Models.ProductOrCustomerViewModel>
+@using ApplicationDashboardMVC.Helpers;
+
+<table class="table table-hover">
+  
+    @foreach (var md in Model)
+    {
+        <tr>
+            <td> @Html.ProductImage(@md.Type, @md.Image, "60px", "58px") </td>
+            <td>@md.Name </td>
+            <td>@md.TypeOrCountry </td>
+        </tr>
+    }
+
+</table>
+
+<script type="text/javascript">
+
+    $('img').addClass('rounded img-thumbnail');
+
+</script>

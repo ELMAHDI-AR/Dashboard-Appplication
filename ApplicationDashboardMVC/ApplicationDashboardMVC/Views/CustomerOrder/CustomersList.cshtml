@@ -1,0 +1,104 @@
+﻿
+@{
+    ViewBag.Title = "CustomersList";
+}
+
+<!-- CSS -->
+@*<link href="~/Content/bootstrap.min.css" rel="stylesheet" />*@
+<link href="~/Content/dataTables.bootstrap.min.css" rel="stylesheet" />
+
+<div id="page-wrapper">
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">Customer - Order</h1>
+        </div>
+        <!-- /.col-lg-12 -->
+    </div>
+    <!-- /.row -->
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    CUSTOMER LIST
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-lg-12">
+
+                            <table id="myDataTable" class="table table-bordered table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Customer Profil</th>
+                                        <th>Customer ID</th>
+                                        <th>Customer Name</th>
+                                        <th>Customer Email</th>
+                                        <th>Customer Phone</th>
+                                        <th>Customer Country</th>
+                                        <th>Order</th>
+                                       
+                                    </tr>
+                                </thead>
+                            </table>
+
+                        </div>
+                    </div>
+                    <!-- /.row (nested) -->
+                </div>
+                <!-- /.panel-body -->
+            </div>
+            <!-- /.panel -->
+        </div>
+        <!-- /.col-lg-12 -->
+    </div>
+    <!-- /.row -->
+</div>
+<!-- /#page-wrapper -->
+
+@section Scripts{
+    
+<!-- JS -->
+@*<script src="~/Scripts/jquery-1.10.2.min.js"></script>*@
+    <script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
+    @*<script src="~/Scripts/bootstrap.min.js"></script>*@
+    <script src="~/Scripts/dataTables.bootstrap.min.js"></script>
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+
+            //GET DATA FROM DATABASE TO FILL DATATABLE
+            var oTable = $("#myDataTable").DataTable({
+
+                "ajax": {
+                    "url": "/CustomerOrder/GetCustomers",
+                    "type": "GET",
+                    "dataType": "json"
+                },
+
+                "columns": [
+                    {
+                        "data": "CustomerImage", "width": "50px", "render": function (data) {
+                            return '<img class="rounded img-thumbnail" style="width:60px; height:58px;" src="/Images/Customers/' + data + '"/>';
+                        }
+                    },
+                    { "data": "ID", "autowidth": true },
+                    { "data": "CustomerName", "autowidth": true },
+                    { "data": "CustomerEmail", "autowidth": true },
+                    { "data": "CustomerPhone", "autowidth": true },
+                    { "data": "CustomerCountry", "autowidth": true },
+                    {
+                        "data": "ID", "width": "50px", "render": function (data) {
+
+                            return '<a href=/Products/ProductList/'+ data + ' class="btn btn-primary">Order</a>';
+                            //return '<a href=/Products/ProductList/' + data + ' class="btn btn-primary"  data-id= ' + data + '>Order</a>';
+                        }
+                    }
+                ]
+            });
+
+        });
+
+    </script>
+
+}
+

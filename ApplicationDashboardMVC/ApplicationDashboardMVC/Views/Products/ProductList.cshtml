@@ -1,0 +1,119 @@
+﻿
+@{
+    ViewBag.Title = "ProductList";
+}
+
+<h2>ProductList</h2>
+
+<div id="page-wrapper">
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">
+                <span class="glyphicon glyphicon-shopping-cart"></span> Shopping Cart
+                <p style="display:inline-block; position:relative; right:-56%;">
+                    <button type="button" class="btn btn-primary" id="myOrder">
+                        <span class="glyphicon glyphicon-shopping-cart"></span> My Order 
+                    </button>
+                </p>
+            </h1>
+        </div>
+        <!-- /.col-lg-12 -->
+    </div>
+    <!-- /.row -->
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    PRODUCT LIST
+                    <div style="display:inline-block; position:relative; right:-68%;">
+                        <button type="button" class="btn btn-primary btn-xs" data-id="Cars">Cars</button>
+                        <button type="button" class="btn btn-default btn-xs" data-id="Clothing">Clothing</button>
+                        <button type="button" class="btn btn-warning btn-xs" data-id="Electronics">Electronics</button>
+                    </div>
+                </div>
+                <div class="panel-body">
+
+                  
+                </div> <!-- /.panel-body -->
+                
+            </div>
+            <!-- /.panel -->
+        </div>
+        <!-- /.col-lg-12 -->
+    </div>
+    <!-- /.row -->
+</div>
+<!-- /#page-wrapper -->
+
+<!-- MODAL -->
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+
+    <div class="modal-dialog" role="document">
+
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="exampleModalLabel"> <span class="glyphicon glyphicon-shopping-cart"></span> Order </h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div> <!-- MODEL HEADER-->
+
+            <div class="modal-body">
+
+            </div> <!-- MODAL BODY-->
+
+        </div>
+    </div>
+
+</div>
+
+
+@section Scripts{
+    
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+
+            $(".btn").click(function (element) {
+
+                var id = $(this).attr('data-id');
+
+                $.ajax({
+                    type: 'GET',
+                    url: '@Url.Action("GetProductByCategory", "Products")',
+                    data: { category: $(this).attr('data-id') },
+                    success: function (response) {
+                        $(".panel-body").html(response);
+                    },
+                    error: function (error) {
+
+                    }
+                });
+
+            });
+
+            $("#myOrder").click(function () {
+
+                $(".modal-body").html('');
+                $.ajax({
+
+                    type: 'GET',
+                    url: '@Url.Action("DisplayShoppingCart", "Products")',
+                    success: function (response) {
+
+                        $(".modal-body").html(response);
+                        $("#exampleModal").modal('show');
+
+                    },
+                    error: function () {
+                        alert("Something Wrong");
+                    }
+
+                });
+            });
+
+        });
+
+    </script>
+}

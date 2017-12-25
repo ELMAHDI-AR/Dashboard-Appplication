@@ -1,0 +1,108 @@
+﻿@model IEnumerable<ApplicationDashboardMVC.Models.ProductsViewModel>
+@using ApplicationDashboardMVC.Helpers;
+
+<div class="row">
+
+    @if (Model != null && Model.Any())
+    {
+        foreach (var product in Model)
+        {
+            
+
+            <div class="col-md-4">
+                <div class="thumbnail">
+
+                    @Html.ProductImage(product.ProductType, product.ProductImage, "300px", "165px")
+                    
+                    <div class="caption">
+                        <h3 style="text-align:center">@product.ProductName</h3>
+
+                        <span style="position: relative; left: 29%; font-size: 16px;" class="label label-default">
+                            @string.Format("{0} {1}", product.UnitPriceProduct, "$")
+                        </span>
+
+                        <select id="Qte_@product.ProductID" class="form-control" style="margin-top: 10px;">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </select>
+
+                        <p>
+                            <a class="btn btn-success" id="test" role="button" 
+                               data-productId="@product.ProductID" 
+                               data-productImage="@product.ProductImage" 
+                               data-productName="@product.ProductName"
+                               data-productType="@product.ProductType"
+                               data-UnitPriceProduct="@product.UnitPriceProduct"
+                               style="margin-left: 65px; margin-top: 10px;">
+                               
+                                <span class="glyphicon glyphicon-shopping-cart"></span>  Add To Card
+                            </a>
+                            @*<button type="button" class="btn btn-success" style="margin-left: 25%; margin-top: 2%;">
+                                <span class="glyphicon glyphicon-shopping-cart"></span>  Add To Card
+                            </button>*@
+                        </p>
+
+                    </div> <!-- END caption -->
+
+                </div> <!--END thumbnail-->
+
+            </div> <!-- END col-md-4-->
+          
+        }
+
+    }
+
+
+        </div>
+<!-- /.row (nested) -->
+
+<!-- JS -->
+
+    
+<script type="text/javascript">
+
+    $(document).ready(function () {
+       
+        $('.btn-success').click(function () {
+
+            var selectedProduct = {
+
+                ProductID: $(this).attr('data-productId'),
+                ProductImage: $(this).attr('data-productImage'),
+                ProductName: $(this).attr('data-productName'),
+                ProductType: $(this).attr('data-productType'),
+                UnitPriceProduct: $(this).attr('data-UnitPriceProduct'),
+                QteSelected: $('#Qte_' + $(this).attr('data-productId')).val()
+            };
+
+            console.log(selectedProduct);
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("ShoppingCart", "Products")',
+                data: selectedProduct,
+                success: function (response) {
+                    alert(response.message);
+                },
+                error: function (response) {
+                    alert(response.message);
+                }
+                
+            });
+           
+        });
+
+      
+
+        });
+
+</script>    
+
+
+
+
+
+

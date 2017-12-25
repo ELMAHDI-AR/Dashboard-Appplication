@@ -1,0 +1,138 @@
+﻿@model IEnumerable<ApplicationDashboardMVC.Models.ProductsViewModel>
+@using ApplicationDashboardMVC.Helpers;
+
+@{ 
+    decimal totalOrder = 0;
+}
+
+@if (Model != null && Model.Any())
+{
+    using (Html.BeginForm("AddOrder", "Products", new { id = "f"}))
+    {
+    <div class="row">
+
+        <div class="col-md-12">
+          
+            <table id="tableOrder" class="table table-hover">
+                <tr>
+                    <th>Product Image</th>
+                    <th>Product Name</th>
+                    <th>Unit Price</th>
+                    <th>Qte Selected</th>
+                    <th>Product Type</th>
+                    <th>Total Price</th>
+                </tr>
+               @foreach (var product in Model)
+               {
+                <tr>
+                    <td>
+                       @Html.ProductImage(product.ProductType, product.ProductImage, "60px", "58px")
+                    </td>
+                    <td>@product.ProductName</td>
+                    <td>@string.Format("{0} $", product.UnitPriceProduct)</td>
+                    <td>@product.QteSelected</td>
+                    <td>@ProductType(product.ProductType)</td>
+                    <td>@string.Format("{0} $", (product.UnitPriceProduct * product.QteSelected))</td>
+                </tr>
+                   totalOrder += (product.QteSelected * product.UnitPriceProduct);
+
+                @Html.HiddenFor(p=>product.ProductID)
+                @Html.HiddenFor(p => product.QteSelected)
+
+               }
+            </table>
+
+            <!-- TOTAL PRICE-->
+            <h4 style="margin-left: 66%;">Total : <span class="label label-info">@string.Format("{0} $", totalOrder)</span></h4>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="close" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id="SaveOrder">Save Order</button>
+    </div> <!-- MODAL FOOTER-->
+        }
+    }
+else
+{
+    <div class="alert alert-warning" role="alert"> your basket is empty !</div>
+}
+
+
+<!-- HELPER -->
+
+@helper ProductType(string productType) {
+
+    switch (productType)
+    {
+        case "Cars":
+                <span class="label label-success">@productType</span>
+            break;
+        case "Clothing":
+                <span class="label label-warning">@productType</span>
+            break;
+        case "Electronics":
+                <span class="label label-info">@productType</span>
+            break;
+    }
+}
+
+<!--JS-->
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        //add class rounded img-thumbnail to img tag
+        $('img').addClass('rounded img-thumbnail');
+
+        //Save Order
+        $("#SaveOrder").click(function () {
+
+            var $form = $(this).closest('form');
+            var dataProduct = $form.serializeArray();
+
+            console.log(dataProduct);
+
+            var arrIdProduct = [];
+            var arrQteProduct = [];
+
+            for( i = 0; i < dataProduct.length; i++)
+            {
+                if (dataProduct[i].name == 'product.ProductID')
+                {
+                    arrIdProduct.push(dataProduct[i].value);
+                }
+                else if (dataProduct[i].name == 'product.QteSelected')
+                {
+                    arrQteProduct.push(dataProduct[i].value);
+
+                }
+            }
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("AddOrder", "Products")',
+                data: { arrIdProduct, arrQteProduct },
+                success: function (response) {
+                    if(response.data == true)
+                    {
+                        alert("Order has saved successfully ");
+                    }
+                    else
+                    {
+                        alert("Something Wrong ! ");
+                    }
+
+                },
+                error: function (error) {
+                    alert("Something Wrong ! ");
+                }
+            });
+        });
+
+    });
+
+</script>
+
+
